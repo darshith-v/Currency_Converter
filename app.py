@@ -1,32 +1,49 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 import requests
 
 app = Flask(__name__)
 
-# Replace with your actual API key
-API_KEY = 'YOUR_API_KEY'
-API_URL = 'https://v6.exchangerate-api.com/v6/{}/latest/{}'
-
 def get_conversion_rate(from_currency, to_currency):
-    url = API_URL.format(API_KEY, from_currency)
+    url = f"https://api.exchangerate-api.com/v4/latest/{from_currency}"
     response = requests.get(url)
-    data = response.json()
     
-    if 'rates' in data:
-        rate = data['rates'].get(to_currency, 'Currency not found')
-        return rate
-    else:
-        return 'Error fetching rates'
+    if response.status_code != 200:
+        raise Exception(f"Error: API request failed with status code {response.status_code}")
+    
+    if not response.text.strip():
+        raise Exception("Error: Received empty response from the API.")
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    conversion_rate = None
-    if request.method == 'POST':
-        from_currency = request.form.get('from_currency').upper()
-        to_currency = request.form.get('to_currency').upper()
-        conversion_rate = get_conversion_rate(from_currency, to_currency)
+    if 'application/json' in response.headers.get('Content-Type', ''):
+        try:
+            data = response.json()
+        except ValueError:
+            raise Exception(f"Error: Unable to parse JSON from response: {response.text}")
+    else:
+        raise Exception(f"Error: API returned non-JSON response: {response.text}")
+
+    rate = data.get('rates', {}).get(to_currency)
+    if rate is None:
+        raise Exception(f"Error: Conversion rate for {to_currency} not found.")
     
-    return render_template('index.html', conversion_rate=conversion_rate)
+    return rate
+
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+@app.route('/convert', methods=['POST'])
+def convert():
+    from_currency = request.form['from_currency']
+    to_currency = request.form['to_currency']
+    amount = float(request.form['amount'])
+
+    try:
+        rate = get_conversion_rate(from_currency, to_currency)
+        converted_amount = amount * rate
+        return jsonify({'converted_amount': converted_amount, 'rate': rate})
+
+    except Exception as e:
+        return jsonify({'error': str(e)})
 
 if __name__ == '__main__':
     app.run(debug=True)

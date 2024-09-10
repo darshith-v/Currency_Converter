@@ -49,7 +49,7 @@
             margin-bottom: 10px;
         }
         
-        input[type="text"] {
+        input[type="text"], input[type="number"] {
             width: 100%;
             padding: 10px;
             font-size: 18px;
@@ -97,7 +97,7 @@
         </header>
         
         <main>
-            <form method="POST">
+            <form id="converter-form">
                 <div class="form-group">
                     <label for="from_currency">From:</label>
                     <input type="text" id="from_currency" name="from_currency" placeholder="USD" required>
@@ -108,20 +108,51 @@
                     <input type="text" id="to_currency" name="to_currency" placeholder="EUR" required>
                 </div>
                 
+                <div class="form-group">
+                    <label for="amount">Amount:</label>
+                    <input type="number" id="amount" name="amount" step="0.01" placeholder="100" required>
+                </div>
+                
                 <button type="submit">Convert</button>
             </form>
             
-            {% if conversion_rate %}
-                <div class="result">
-                    <h2>Conversion Rate</h2>
-                    <p>{{ conversion_rate }}</p>
-                </div>
-            {% endif %}
+            <div id="result" class="result" style="display: none;">
+                <h2>Conversion Result</h2>
+                <p id="converted_amount"></p>
+                <p id="rate"></p>
+            </div>
         </main>
         
         <footer>
             <p>&copy; 2024 Currency Converter. All rights reserved.</p>
         </footer>
     </div>
+
+    <script>
+        document.getElementById('converter-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+            fetch('/convert', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('result');
+                if (data.error) {
+                    resultDiv.innerHTML = `<h2>Error</h2><p>${data.error}</p>`;
+                } else {
+                    document.getElementById('converted_amount').innerText = `Converted Amount: ${data.converted_amount}`;
+                    document.getElementById('rate').innerText = `Conversion Rate: ${data.rate}`;
+                    resultDiv.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                document.getElementById('result').innerHTML = `<h2>Error</h2><p>${error}</p>`;
+                document.getElementById('result').style.display = 'block';
+            });
+        });
+    </script>
 </body>
 </html>
