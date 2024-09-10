@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Converter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Currency Converter</h1>
+        </header>
+        
+        <main>
+            <form method="POST">
+                <div class="form-group">
+                    <label for="from_currency">From:</label>
+                    <input type="text" id="from_currency" name="from_currency" placeholder="USD" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="to_currency">To:</label>
+                    <input type="text" id="to_currency" name="to_currency" placeholder="EUR" required>
+                </div>
+                
+                <button type="submit">Convert</button>
+            </form>
+            
+            {% if conversion_rate %}
+                <div class="result">
+                    <h2>Conversion Rate</h2>
+                    <p>{{ conversion_rate }}</p>
+                </div>
+            {% endif %}
+        </main>
+        
+        <footer>
+            <p>&copy; 2024 Currency Converter. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>
