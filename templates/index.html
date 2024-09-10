@@ -4,7 +4,91 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Currency Converter</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* Add some basic styling to make it look good */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0; /* light gray background */
+        }
+        
+        .container {
+            max-width: 800px; /* limit the width to 800px */
+            margin: 40px auto; /* center the container */
+            padding: 20px;
+            background-color: #fff; /* white background */
+            border: 1px solid #ddd; /* light gray border */
+            border-radius: 10px; /* rounded corners */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* subtle shadow */
+        }
+        
+        header {
+            background-color: #333; /* dark gray background */
+            color: #fff; /* white text */
+            padding: 10px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 36px; /* bigger font size */
+            margin-bottom: 10px;
+        }
+        
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+            border: 1px solid #ccc;
+        }
+        
+        button[type="submit"] {
+            background-color: #4CAF50; /* green background */
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        button[type="submit"]:hover {
+            background-color: #3e8e41; /* darker green on hover */
+        }
+        
+        .result {
+            background-color: #f7f7f7; /* light gray background */
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .result h2 {
+            margin-top: 0;
+        }
+        
+        footer {
+            background-color: #333; /* dark gray background */
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            clear: both;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
